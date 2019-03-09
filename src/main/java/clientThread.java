@@ -68,15 +68,15 @@ public class clientThread implements Runnable{
                         receiveFlag = true;
                     } catch (InterruptedIOException e) {
                         tries++;
-                        System.out.println("Time out for the " + tries + " try");
+//                        System.out.println("Time out for the " + tries + " try");
                     }
                 }
 
                 if(receiveFlag) {
-                    System.out.println("Received data from server: ");
-                    String data = new String(dreceive.getData(),0,dreceive.getLength())
-                            + "from " + dreceive.getAddress().getHostAddress() + ":" + dreceive.getPort();
-                    System.out.println(data);
+//                    System.out.println("Received data from server: ");
+//                    String data = new String(dreceive.getData(),0,dreceive.getLength())
+//                            + "from " + dreceive.getAddress().getHostAddress() + ":" + dreceive.getPort();
+//                    System.out.println(data);
                 } else {
                     System.out.println("No response!");
                     node.removeDead(neighbor);

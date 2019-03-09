@@ -54,13 +54,13 @@ public class serverThread implements Runnable {
                     node.setDistance(newNeighbor.getUuid(), Integer.parseInt(distance));
 
                     node.updateConfigFile();
-                    System.out.println("One new alive neighbor is added!");
+//                    System.out.println("One new alive neighbor is added!");
                     clientThread thread = new clientThread(node, newNeighbor);
                     new Thread(thread).start();
                     node.addNewClientThread(thread);
                 }
 
-                System.out.println(new Date() + "  " + receive.getAddress() + " : " + receive.getPort());
+//                System.out.println(new Date() + "  " + receive.getAddress() + " : " + receive.getPort());
 
                 // Send message back to client
                 String str = node.toString();

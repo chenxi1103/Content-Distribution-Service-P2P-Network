@@ -55,8 +55,10 @@ class Node {
         for (String key : aliveNeighbors.keySet()) {
             Node currNode = aliveNeighbors.get(key);
             sb.append(currNode.toJson());
-            sb.append("\"metric\":" + distanceMetric.get(currNode.getUuid()));
+            sb.append("\"metric\":" + distanceMetric.get(currNode.getUuid()) + "},");
         }
+        String str = sb.toString().substring(0, sb.toString().length() - 1) + "]";
+        System.out.println(str);
     }
 
     void updateConfigFile() throws IOException {
@@ -127,7 +129,6 @@ class Node {
         if (infos.length == 4) {
             Node neighbor = new Node(infos[0]);
             neighbor.setIp(infos[1].trim());
-            System.out.println(infos[1]);
             neighbor.setBackend_port(Integer.parseInt(infos[2]));
             this.aliveNeighbors.put(neighbor.getUuid(), neighbor);
             this.neighbors.add(neighbor);
@@ -153,7 +154,7 @@ class Node {
         return "uuid:" + "\"" + this.uuid + "\","
                 + "name:" + "\"" + this.name + "\","
                 + "host:" + "\"" + this.ip + "\","
-                + "backend:" + "\"" + this.backend_port + "\",";
+                + "backend:" + this.backend_port + ",";
     }
     private String staticInfo() {
         return "uuid = " + uuid + "\n" + "name = " + name + "\n" +

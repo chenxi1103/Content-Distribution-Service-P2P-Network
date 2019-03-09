@@ -82,7 +82,6 @@ public class contentserver {
                     String key = "peer_" + i;
                     if (map.containsKey(key)) {
                         node.addNeighbor(map.get(key));
-                        System.out.println(map.get(key));
                     }
                 }
 
@@ -99,7 +98,6 @@ public class contentserver {
             Scanner scanner = new Scanner(System.in);
             boolean flag = true;
             while (flag) {
-                System.out.println("Please input next instructions");
                 String input = scanner.nextLine();
                 // Check the UUID
                 if (input.toLowerCase().equals("uuid")) {
