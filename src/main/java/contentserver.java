@@ -87,13 +87,25 @@ public class contentserver {
 
             }
 
+            // Server Thread
             serverThread listener = new serverThread(node);
             new Thread(listener).start();
+            // Keep Alive Client Threads + LSPThreads
             for (String key : node.getAliveNeighbors().keySet()) {
                 clientThread client = new clientThread(node,node.getAliveNeighbors().get(key));
+                LSPThread lspThread = new LSPThread(node, node.getAliveNeighbors().get(key));
+
                 new Thread(client).start();
+                new Thread(lspThread).start();
                 node.addNewClientThread(client);
+                node.addNewLSPThread(lspThread);
             }
+
+
+
+            // ForwardFloodingThread
+            ForwardThread forwardThread = new ForwardThread(node);
+            new Thread(forwardThread).start();
 
             Scanner scanner = new Scanner(System.in);
             boolean flag = true;
@@ -136,6 +148,10 @@ public class contentserver {
                 }
 
                 else if (input.toLowerCase().equals("map")) {
+                    System.out.println("{" + node.mapString());
+                    for (String key : node.getLSDB().keySet()) {
+                        System.out.println(node.getLSDB().get(key).mapString());
+                    }
 
                 }
 
@@ -145,11 +161,11 @@ public class contentserver {
 
                 else if (input.toLowerCase().equals("kill")) {
                     listener.setFlag(false);
+                    forwardThread.kill();
                     node.killAllThreads();
                     flag = false;
                     System.out.println("Killed!");
                 }
-
             }
 
 

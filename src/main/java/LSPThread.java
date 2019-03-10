@@ -4,16 +4,17 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class clientThread implements Runnable{
+public class LSPThread implements Runnable{
     private Node node;
     private Node neighbor;
     private static final int TIMEOUT = 10000;
     private static final int MAX = 3;
     private boolean flag = true;
-    clientThread(Node node, Node neighbor) {
+    LSPThread(Node node, Node neighbor) {
         this.node = node;
         this.neighbor = neighbor;
     }
+
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
@@ -25,11 +26,10 @@ public class clientThread implements Runnable{
      *
      * @see Thread#run()
      */
-    @Override
     public void run() {
         try{
             while (flag) {
-                call(this.neighbor);
+                selfPacket(neighbor);
                 Thread.sleep(10000);
             }
         } catch (Exception e) {
@@ -41,16 +41,22 @@ public class clientThread implements Runnable{
         this.flag = flag;
     }
 
-    private void call(Node neighbor) {
+    private void selfPacket(Node neighbor) {
         {
             try {
+
                 InetAddress add = InetAddress.getByName("localhost");
                 // sent from random port
                 DatagramSocket dsock = new DatagramSocket();
 
-                String message1 = node.toString() + node.getDistance(neighbor.getUuid()) + "\n";
+                LSPacket lsPacket = new LSPacket(this.node, this.node.getSeqNum(), this.node.getAliveNeighbors());
 
-                byte arr[] = message1.getBytes();
+                String LSPinfo = lsPacket.toString();
+
+                this.node.setSeqNum(this.node.getSeqNum() + 1);
+
+                byte arr[] = LSPinfo.getBytes();
+
                 DatagramPacket dpack = new DatagramPacket(arr, arr.length, add, neighbor.getBackend_port());
 
                 byte[] buf = new byte[1024];
@@ -68,7 +74,7 @@ public class clientThread implements Runnable{
                         receiveFlag = true;
                     } catch (InterruptedIOException e) {
                         tries++;
-//                        System.out.println("Time out for the " + tries + " try");
+                        System.out.println("Time out for the " + tries + " try");
                     }
                 }
 
@@ -77,7 +83,6 @@ public class clientThread implements Runnable{
                     node.removeDead(neighbor);
                     node.updateConfigFile();
                     dsock.close();
-                    // If a server is not reachable, this thread would be killed
                     flag = false;
                 }
             } catch (Exception e) {

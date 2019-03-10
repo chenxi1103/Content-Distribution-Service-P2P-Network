@@ -12,11 +12,14 @@ class Node {
     private String name;
     private int backend_port;
     private int peer_count;
+    private int seqNum;
     private String ip;
     private List<Node> neighbors;
     private HashMap<String, Integer> distanceMetric;
     private HashMap<String, Node> aliveNeighbors;
+    private HashMap<String, LSPacket> LSDB;
     private List<clientThread> clientThreadList;
+    List<LSPThread> lspThreads;
 
     /**
      * Node Constructor
@@ -24,10 +27,45 @@ class Node {
     Node(String uuid) {
         this.uuid = uuid;
         this.name = "default";
+        this.seqNum = 0;
         this.distanceMetric = new HashMap<>();
         this.neighbors = new ArrayList<>();
         this.aliveNeighbors = new HashMap<>();
         this.clientThreadList = new ArrayList<>();
+        this.LSDB = new HashMap<>();
+        this.lspThreads = new ArrayList<>();
+    }
+
+    String mapString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"" + this.uuid + "\":{");
+        for (String id : aliveNeighbors.keySet()) {
+            Node currNode = aliveNeighbors.get(id);
+            sb.append("{\"" + currNode.getUuid() + "\":" + distanceMetric.get(currNode.getUuid()) + ",");
+        }
+        String str = sb.toString().substring(0, sb.toString().length()-1) + "}";
+        return str;
+    }
+
+    HashMap<String, LSPacket> getLSDB() {
+        return this.LSDB;
+    }
+    void addNewLSPThread(LSPThread thread) {
+        this.lspThreads.add(thread);
+    }
+
+    void setPacket(String id, LSPacket packet) {
+        if (!id.equals(this.uuid)) {
+            LSDB.put(id, packet);
+        }
+    }
+
+
+    int getSeqNum() {
+        return this.seqNum;
+    }
+    void setSeqNum(int seq) {
+        this.seqNum = seq;
     }
 
     Node getNeighbor(String id) {
@@ -45,10 +83,14 @@ class Node {
         for (clientThread thread : clientThreadList) {
             thread.setFlag(false);
         }
+        for (LSPThread lspThread : lspThreads) {
+            lspThread.setFlag(false);
+        }
     }
     HashMap<String, Node> getAliveNeighbors() {
         return aliveNeighbors;
     }
+
     void printAliveNodes() {
         StringBuilder sb = new StringBuilder();
         sb.append("[{");
@@ -127,11 +169,15 @@ class Node {
     void addNeighbor(String info) {
         String[] infos = info.split(",");
         if (infos.length == 4) {
+            // uuid
             Node neighbor = new Node(infos[0]);
+            // ip
             neighbor.setIp(infos[1].trim());
+            // backend_port
             neighbor.setBackend_port(Integer.parseInt(infos[2]));
             this.aliveNeighbors.put(neighbor.getUuid(), neighbor);
             this.neighbors.add(neighbor);
+            // metrics
             this.distanceMetric.put(neighbor.getUuid(),
                     Integer.parseInt(infos[3]));
         }

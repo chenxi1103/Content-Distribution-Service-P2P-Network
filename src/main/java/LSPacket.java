@@ -1,0 +1,59 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class LSPacket {
+    private Node router;
+    private int seqNum;
+    private List<Node> nodeList;
+
+    LSPacket(Node router, int seqNum, HashMap<String, Node> aliveNodes) {
+        this.router = router;
+        this.seqNum = seqNum;
+        this.nodeList = new ArrayList<>();
+        for (String key : aliveNodes.keySet()) {
+            nodeList.add(aliveNodes.get(key));
+        }
+    }
+
+    int getSeqNum() {
+        return this.seqNum;
+    }
+
+    Node getRouter() {
+        return this.router;
+    }
+
+    List<Node> getNodeList() {
+        return this.nodeList;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(seqNum + "\n");
+        sb.append(router.nodeInfo() + "\n");
+        for (int i = 0; i < nodeList.size(); i++) {
+            String info =
+                    nodeList.get(i).nodeInfo()
+                            + router.getDistance(nodeList.get(i).getUuid())
+                            + "\n";
+            sb.append(info);
+        }
+        return sb.toString();
+    }
+
+
+    String mapString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"" + router.getUuid() + "\":");
+
+        for (String key : router.getAliveNeighbors().keySet()) {
+            String id = router.getAliveNeighbors().get(key).getUuid();
+            sb.append("{\"" + id
+                    + "\":" + router.getDistance(id) + ",");
+        }
+        String str = sb.toString().substring(0, sb.toString().length()-1) + "}";
+        return str;
+    }
+}
