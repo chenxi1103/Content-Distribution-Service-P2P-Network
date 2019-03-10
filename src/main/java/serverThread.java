@@ -66,7 +66,6 @@ public class serverThread implements Runnable {
                             HashMap<String, Node> aliveNodes = new HashMap<>();
                             for (int i = 2; i < infoArray.length; i++) {
                                 String nodeInfo = infoArray[i];
-                                System.out.println(nodeInfo);
                                 Node n = new Node(nodeInfo.split(",")[0]);
                                 n.setIp(nodeInfo.split(",")[1]);
                                 n.setBackend_port(Integer.parseInt(nodeInfo.split(",")[2]));

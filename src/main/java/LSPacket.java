@@ -33,10 +33,11 @@ public class LSPacket {
         StringBuilder sb = new StringBuilder();
         sb.append(seqNum + "\n");
         sb.append(router.nodeInfo() + "\n");
-        for (int i = 0; i < nodeList.size(); i++) {
+        for (String key : router.getAliveNeighbors().keySet()) {
+                Node currNode = router.getAliveNeighbors().get(key);
             String info =
-                    nodeList.get(i).nodeInfo()
-                            + router.getDistance(nodeList.get(i).getUuid())
+                    currNode.nodeInfo()
+                            + router.getDistance(currNode.getUuid())
                             + "\n";
             sb.append(info);
         }

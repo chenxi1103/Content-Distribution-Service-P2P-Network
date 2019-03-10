@@ -34,6 +34,7 @@ public class FloodThread implements Runnable{
             // sent from random port
             DatagramSocket dsock = new DatagramSocket();
             String forwardInfo = this.packet.toString();
+            System.out.println("forwardInfo is : " + forwardInfo);
             byte arr[] = forwardInfo.getBytes();
             DatagramPacket dpack = new DatagramPacket(arr, arr.length, add, neighbor.getBackend_port());
 
