@@ -47,14 +47,15 @@ public class LSPacket {
 
     String mapString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"" + router.getUuid() + "\":");
+        sb.append("\"" + router.getName() + "\":{");
 
         for (String key : router.getAliveNeighbors().keySet()) {
             String id = router.getAliveNeighbors().get(key).getUuid();
-            sb.append("{\"" + id
+            String name = router.getAliveNeighbors().get(key).getName();
+            sb.append("\"" + name
                     + "\":" + router.getDistance(id) + ",");
         }
-        String str = sb.toString().substring(0, sb.toString().length()-1) + "}";
+        String str = sb.toString().substring(0, sb.toString().length()-1) + "}," + "\n";
         return str;
     }
 }

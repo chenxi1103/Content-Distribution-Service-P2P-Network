@@ -29,12 +29,10 @@ public class FloodThread implements Runnable{
      */
     public void run() {
         try{
-            System.out.println("Start to run flood...");
             InetAddress add = InetAddress.getByName("localhost");
             // sent from random port
             DatagramSocket dsock = new DatagramSocket();
             String forwardInfo = this.packet.toString();
-            System.out.println("forwardInfo is : " + forwardInfo);
             byte arr[] = forwardInfo.getBytes();
             DatagramPacket dpack = new DatagramPacket(arr, arr.length, add, neighbor.getBackend_port());
 
@@ -47,13 +45,12 @@ public class FloodThread implements Runnable{
                 dsock.send(dpack);
                 try {
                     dsock.receive(dreceive);
-                    if (!dreceive.getAddress().equals(add)) {
-                        throw new IOException("Received Packet from Unknown Place");
-                    }
+//                    if (!dreceive.getAddress().equals(add)) {
+//                        throw new IOException("Received Packet from Unknown Place");
+//                    }
                     receiveFlag = true;
                 } catch (InterruptedIOException e) {
                     tries++;
-                    System.out.println("Time out for the " + tries + " try");
                 }
             }
 

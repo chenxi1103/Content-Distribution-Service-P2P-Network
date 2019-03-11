@@ -38,12 +38,12 @@ class Node {
 
     String mapString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"" + this.uuid + "\":{");
+        sb.append("{\"" + this.name + "\":");
         for (String id : aliveNeighbors.keySet()) {
             Node currNode = aliveNeighbors.get(id);
-            sb.append("{\"" + currNode.getUuid() + "\":" + distanceMetric.get(currNode.getUuid()) + ",");
+            sb.append("{\"" + currNode.getName() + "\":" + distanceMetric.get(currNode.getUuid()) + ",");
         }
-        String str = sb.toString().substring(0, sb.toString().length()-1) + "}";
+        String str = sb.toString().substring(0, sb.toString().length()-1) + "},";
         return str;
     }
 
@@ -60,6 +60,9 @@ class Node {
         }
     }
 
+    String getName() {
+        return "node" + this.uuid.substring(0,3);
+    }
 
     int getSeqNum() {
         return this.seqNum;
@@ -175,6 +178,7 @@ class Node {
             neighbor.setIp(infos[1].trim());
             // backend_port
             neighbor.setBackend_port(Integer.parseInt(infos[2]));
+            neighbor.setName("node" + infos[0].substring(0,3));
             this.aliveNeighbors.put(neighbor.getUuid(), neighbor);
             this.neighbors.add(neighbor);
             // metrics

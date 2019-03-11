@@ -60,6 +60,7 @@ public class serverThread implements Runnable {
 
                             // First parse the LSPacket
                             Node r = new Node(routerId);
+                            r.setName("node" + routerId.substring(0,3));
                             r.setIp(router.split(",")[1]);
                             r.setBackend_port(Integer.parseInt(router.split(",")[2]));
 
@@ -69,6 +70,7 @@ public class serverThread implements Runnable {
                                 Node n = new Node(nodeInfo.split(",")[0]);
                                 n.setIp(nodeInfo.split(",")[1]);
                                 n.setBackend_port(Integer.parseInt(nodeInfo.split(",")[2]));
+                                n.setName("node" + nodeInfo.split(",")[0].substring(0,3));
                                 r.addNewAlive(n);
                                 r.setDistance(nodeInfo.split(",")[0], Integer.parseInt(nodeInfo.split(",")[3]));
                             }
@@ -97,6 +99,7 @@ public class serverThread implements Runnable {
                         Node newNeighbor = new Node(uuid);
                         newNeighbor.setIp(ip);
                         newNeighbor.setBackend_port(Integer.parseInt(port));
+                        newNeighbor.setName("node" + port);
 //                    newNeighbor.setDistance(uuid, Integer.parseInt(distance));
 
                         node.addNewAlive(newNeighbor);

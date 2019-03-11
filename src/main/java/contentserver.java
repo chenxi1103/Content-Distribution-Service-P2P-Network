@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.UUID;
@@ -148,15 +147,19 @@ public class contentserver {
                 }
 
                 else if (input.toLowerCase().equals("map")) {
-                    System.out.println("{" + node.mapString());
+                    System.out.println(node.mapString());
+                    StringBuilder sb = new StringBuilder();
                     for (String key : node.getLSDB().keySet()) {
-                        System.out.println(node.getLSDB().get(key).mapString());
+                        sb.append(node.getLSDB().get(key).mapString());
                     }
+                    String print = sb.toString().substring(0, sb.toString().length() - 2) + "}";
+                    System.out.println(print);
 
                 }
 
                 else if (input.toLowerCase().equals("rank")) {
-
+                    Dijkstra dijkstra = new Dijkstra(node);
+                    dijkstra.printRank();
                 }
 
                 else if (input.toLowerCase().equals("kill")) {
@@ -165,6 +168,7 @@ public class contentserver {
                     node.killAllThreads();
                     flag = false;
                     System.out.println("Killed!");
+                    break;
                 }
             }
 
